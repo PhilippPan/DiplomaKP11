@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30804.86
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "pan_Diplom", "pan_Diplom\pan_Diplom.csproj", "{39D43BF1-1F16-4017-A458-D6FD67528D85}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{39D43BF1-1F16-4017-A458-D6FD67528D85}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{39D43BF1-1F16-4017-A458-D6FD67528D85}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{39D43BF1-1F16-4017-A458-D6FD67528D85}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{39D43BF1-1F16-4017-A458-D6FD67528D85}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {8B4A4AC3-D705-475C-A1C0-7A3C3A586188}
+	EndGlobalSection
+EndGlobal
