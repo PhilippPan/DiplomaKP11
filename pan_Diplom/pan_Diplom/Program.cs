@@ -105,6 +105,6 @@ namespace pan_Diplom
 
             Console.WriteLine("\n*** Press RETURN to exit ***");
             Console.ReadLine();
-        }
+        } 
     }
 }
