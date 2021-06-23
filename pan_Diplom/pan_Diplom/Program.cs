@@ -96,7 +96,7 @@ namespace pan_Diplom
                             }
                         }
                     }
-                    Console.WriteLine(AddedRowsN + " rows were added");
+                    Console.WriteLine("\r" + AddedRowsN + " rows were added");
                     // даем возможность пользователю добавить еще файлов
                     Console.WriteLine("\nDo you want to add more files?   y/n");
                     switch (Console.ReadLine())
@@ -117,6 +117,14 @@ namespace pan_Diplom
                 Console.WriteLine("\n*** Press RETURN to start creating table ***");
                 Console.ReadLine();
 
+                // создание таблицы cases
+                string caseQuery = "CREATE TABLE IF NOT EXISTS cases AS SELECT z.po_number ||'_'|| z.sku AS case_id, z.product, x.d_type, z.supplier, z.jira_request, z.required_by, z.received_date, z.m_lead_time_in_weeks, z.m_lead_time_in_days, z.item_type, z.next_delivery_date, x.d_created, x.updated, x.location, x.total_amount, x.tax_amount FROM airtable_po_gr_value z  JOIN dear_po x ON z.po_number = x.order_number";
+                using (var command = new NpgsqlCommand(caseQuery, conn))
+                {
+                    command.ExecuteNonQuery();
+                    Console.Out.WriteLine("Table cases was created");
+                }
+
                 // Создание таблицы activities
                 string createActQuery = "CREATE TABLE IF NOT EXISTS activities (case_id text, timestamp timestamp with time zone, status text);";
                 using (var command = new NpgsqlCommand(createActQuery, conn))
@@ -125,13 +133,6 @@ namespace pan_Diplom
                     Console.Out.WriteLine("Finishing creating table activities");
                 }
 
-                // создание таблицы cases
-                string caseQuery = "CREATE TABLE IF NOT EXISTS cases AS SELECT z.po_number ||'_'|| z.sku AS case_id, z.product, x.d_type, z.supplier, z.jira_request, z.required_by, z.received_date, z.m_lead_time_in_weeks, z.m_lead_time_in_days, z.item_type, z.next_delivery_date, x.d_created, x.updated, x.location, x.total_amount, x.tax_amount FROM airtable_po_gr_value z  JOIN dear_po x ON z.po_number = x.order_number";
-                using (var command = new NpgsqlCommand(caseQuery, conn))
-                {
-                    command.ExecuteNonQuery();
-                    Console.Out.WriteLine("Finishing creating table cases");
-                }
 
                 // Обозначение нужных переменных
                 string getPOnumber = "SELECT po_number, sku FROM airtable_po_gr_value";
@@ -157,8 +158,8 @@ namespace pan_Diplom
                 }
                 Dreader.Close();
 
-                
-                // В этом цикле мы проверяем каждый PO_number из списка
+
+                //В этом цикле мы проверяем каждый PO_number из списка
                 for (int i = 0; i < POnumber.Count; i++) //POnumber.Count
                 {
                     // Получение ключа запроса в таблице jira для текущего РО
@@ -171,7 +172,8 @@ namespace pan_Diplom
                         IssueKey = Dreader2.GetString(0);
                     }
                     catch { Dreader2.Close(); continue; }
-                    Console.WriteLine(IssueKey);
+                    Console.Write("\r" + i);
+                    //Console.WriteLine(IssueKey);
                     Dreader2.Close();
 
                     // Получение данных по текущему РО
@@ -237,10 +239,10 @@ namespace pan_Diplom
                                             {
                                                 timestamp = JiraResArray[z, 1].ToString();
                                                 status = JiraResArray[z, 3].ToString();
-                                                x = 2; 
+                                                x = 2;
                                             }
-                                            
-                                        } 
+
+                                        }
                                         catch
                                         {
                                             timestamp = JiraResArray[z, 0].ToString();
@@ -256,8 +258,8 @@ namespace pan_Diplom
                                         catch { z = 16; }
                                         break;
                                 }
-                                Console.WriteLine("STATUS   " + status);
-                                Console.WriteLine("TIME   " + timestamp);
+                                //Console.WriteLine("STATUS   " + status);
+                                //Console.WriteLine("TIME   " + timestamp);
 
 
                                 string checkQuery = "SELECT * FROM public.activities WHERE case_id = '" + POnumber[i] + "_" + Itemnumber[i] + "' AND timestamp = '" + timestamp + "' AND status = '" + status + "'";
@@ -271,18 +273,28 @@ namespace pan_Diplom
                                     using (var command = new NpgsqlCommand(rowsActivityQuery, conn))
                                     {
                                         command.ExecuteNonQuery();
-                                        Console.Out.WriteLine("Row added");
+                                        Console.Out.Write("\r       Row added");
                                     }
                                 }
                                 else { z = 16; CHreader.Close(); break; }
-
-                                //Console.ReadKey();
                             }
                         }
-                    } catch { Console.WriteLine("error"); }
+                    }
+                    catch { Console.WriteLine("error"); }
 
-                } Console.WriteLine("All rows were successfully added to activities!");
+                }
+                Console.WriteLine("\nAll rows were successfully added to activities!");
 
+
+                string filePath = @"D:/CSV/processes.csv";
+                File.WriteAllText(filePath, " ");
+
+                String SCVscript = "COPY processes TO 'D:/CSV/processes.csv' WITH (FORMAT CSV, HEADER);";
+                using (var CSVcommand = new NpgsqlCommand(SCVscript, conn))
+                {
+                    CSVcommand.ExecuteNonQuery();
+                    Console.Out.WriteLine("File is saved");
+                }
             }
                 Console.WriteLine("\n*** Press RETURN to exit ***");
             Console.ReadLine();
